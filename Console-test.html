@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+        }
+    </style>
+</head>
+<body>
+
+<script type="module">
+    import {Console} from "./Console.js";
+
+    document.addEventListener("DOMContentLoaded", async function () {
+        let con = new Console();
+        con.renderAsConsoleApp();
+
+        con.output("欢迎来到学生管理系统");
+        con.output("功能有：1：创建学生");
+
+        con.output("选择功能");
+        let mood = (await con.input())[0];
+
+        switch (Number.parseInt(mood)) {
+            case 1:
+                con.output("您选择了，创建学生");
+                await addStudent();
+                break;
+            default:
+                con.output("暂未开通此项业务");
+                break;
+        }
+
+        async function addStudent() {
+            let Student = class {
+                id;
+                name;
+                gender;
+            }
+            con.output("输入学生ID");
+            let stuId = (await con.input())[0];
+            con.output("输入学生姓名");
+            let stuName = (await con.input())[0];
+            con.output("输入学生性别");
+            let stuGender = (await con.input())[0];
+
+            let stu = new Student();
+            stu.id = stuId;
+            stu.name = stuName;
+            stu.gender = stuGender;
+
+            con.output(`创建成功，学生ID：${stu.id}，学生姓名：${stu.name}，学生性别：${stu.gender}`)
+
+        }
+
+        con.end();
+    });
+</script>
+</body>
+</html>
