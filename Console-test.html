@@ -17,19 +17,19 @@
         let con = new Console();
         con.renderAsConsoleApp();
 
-        con.output("欢迎来到学生管理系统");
-        con.output("功能有：1：创建学生");
+        con.output("student management test app");
+        con.output("we can：1：add a student");
 
-        con.output("选择功能");
+        con.output("please select a option");
         let mood = (await con.input())[0];
 
         switch (Number.parseInt(mood)) {
             case 1:
-                con.output("您选择了，创建学生");
+                con.output("add student has been choose");
                 await addStudent();
                 break;
             default:
-                con.output("暂未开通此项业务");
+                con.output("error X_X");
                 break;
         }
 
@@ -39,11 +39,11 @@
                 name;
                 gender;
             }
-            con.output("输入学生ID");
+            con.output("input ID please");
             let stuId = (await con.input())[0];
-            con.output("输入学生姓名");
+            con.output("input student name");
             let stuName = (await con.input())[0];
-            con.output("输入学生性别");
+            con.output("gender");
             let stuGender = (await con.input())[0];
 
             let stu = new Student();
@@ -51,7 +51,7 @@
             stu.name = stuName;
             stu.gender = stuGender;
 
-            con.output(`创建成功，学生ID：${stu.id}，学生姓名：${stu.name}，学生性别：${stu.gender}`)
+            con.output(`success，ID：${stu.id}，name：${stu.name}，gender：${stu.gender}`)
 
         }
 

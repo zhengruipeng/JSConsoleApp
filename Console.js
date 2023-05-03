@@ -1,5 +1,5 @@
 let Console = class extends Object {
-    //控制台默认样式
+    //default Style Sheet
     #consoleStyleSheet = `
         *{
             padding:0;
@@ -28,7 +28,7 @@ let Console = class extends Object {
             font-size:1.2rem;
             padding:.2em 1em;
         }
-        /*输入文本的样式*/
+        /*the style of editable p element */
         #console-panel>p.editable{
             user-select: none;
         }
@@ -55,19 +55,20 @@ let Console = class extends Object {
         }
     `;
 
-    //生成的控制台HTMLElement
+    //HTMLElement, the main element of control panel
     #consolePanel = null;
 
-    //正在输入的p标签
+    //the editing p element
     #editingInput = null;
 
     /*
     * @name: setEditingInput;
     * @params: HTMLParagraphElement|null htmlPElement
     * @return: Promise<null> isInputTerminal
-    * @desc: 将传输过来的HTMLParagraphElement标签设置为编辑中标签，
-    *   并设置监听方法，当摁下回车和失去焦点的时候提交当前数据
-    *   如果传过来的是null，则将上一次的
+    * @desc: Sets the transmitted HTMLParagraphElement tag
+    *  as an editing tag, and sets a listening method that
+    *  submits current data if enter is pressed and focus is lost.
+    *  If null is sent, it will perfect previous work
     * */
     #setEditingInput(htmlPElement) {
         if (htmlPElement) {
@@ -94,7 +95,7 @@ let Console = class extends Object {
                 }
             });
 
-            //针对firefox的自动换行问题
+            //Auto-wrap problem in firefox
             that.#editingInput?.addEventListener("keyup", function (ev) {
                 if (ev.key.toLowerCase() === "backspace") {
                     if (this.innerText.trim() === "" && this.children[0]?.tagName === "BR") {
@@ -122,16 +123,16 @@ let Console = class extends Object {
         });
     };
 
-    //返回目前是编辑中元素的元素
+    //Returns the element that in editing
     #getEditingInput() {
         return this.#editingInput;
     };
 
 
-    //准备工作
-    //1、创建控制台，设置属性
-    //2、设置样式表
-    //3、添加至页面中
+    //Preparatory work
+    //1. Create the console and set properties
+    //2. Set the style sheet
+    //3. Add it to the page
     renderAsConsoleApp(/*HTMLElement*/ container = document.body) {
         let consolePanel = document.createElement("div");
         consolePanel.id = "console-panel";
@@ -156,7 +157,7 @@ let Console = class extends Object {
     * @name: initItem;
     * @params: String msg
     * @return: HTMLParagraphElement generatedP
-    * @desc: 输出是一个p标签显示信息，返回生成的p标签
+    * @desc: The output a display message and returns the generated p element
     * */
     #initItem(msg) {
         let p = document.createElement("p");
@@ -181,7 +182,9 @@ let Console = class extends Object {
     * @name: input;
     * @params: String msg
     * @return: String[] res
-    * @desc: 输入提示信息后，用户输入的信息以空格为分割，分割成一个字符串数组并返回
+    * @desc: After the prompt is entered,
+    *  the information entered by the user is divided into Spaces,
+    *  divided into an array of strings, and returned
     * */
     async input() {
         let p = this.#initItem("");
@@ -198,10 +201,3 @@ let Console = class extends Object {
 export {
     Console
 };
-
-/*
-    let con = new Console();
-    con.renderAsConsoleApp();
-    let strings = await con.input("input your name");
-    con.output("Hello " + strings);
-* */
