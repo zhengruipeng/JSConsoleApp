@@ -31,6 +31,7 @@ let Console = class extends Object {
         /*the style of editable p element */
         #console-panel>p.editable{
             user-select: none;
+            cursor:default;
         }
         @keyframes inputPointer {
             from {
