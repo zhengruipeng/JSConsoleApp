@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style>
-        *{
+        * {
         }
     </style>
 </head>
@@ -17,21 +17,7 @@
         let con = new Console();
         con.renderAsConsoleApp();
 
-        con.output("student management test app");
-        con.output("we can：1：add a student");
-
-        con.output("please select a option");
-        let mood = (await con.input())[0];
-
-        switch (Number.parseInt(mood)) {
-            case 1:
-                con.output("add student has been choose");
-                await addStudent();
-                break;
-            default:
-                con.output("error X_X");
-                break;
-        }
+        const students = [];
 
         async function addStudent() {
             let Student = class {
@@ -51,11 +37,68 @@
             stu.name = stuName;
             stu.gender = stuGender;
 
+            students.push(stu);
+
             con.output(`success，ID：${stu.id}，name：${stu.name}，gender：${stu.gender}`)
+        }
+
+        async function removeStudent() {
+            con.output("input ID please");
+            let stuId = (await con.input())[0];
+
+            let student = students.find(v => v.id === stuId);
+            students.splice(students.indexOf(student), 1);
+
+            con.output("delete successful");
 
         }
 
-        con.end();
+        async function selectStudent() {
+            students.forEach(stu => {
+                con.output(`ID：${stu.id}，name：${stu.name}，gender：${stu.gender}`)
+            })
+        }
+
+
+        let loop = 1;
+        while (loop) {
+            con.output("student management test app");
+            con.output("we can：");
+            con.output("1：add a student");
+            con.output("2：remove a student");
+            con.output("3：show all students");
+            con.output("4：exit");
+
+            con.output("please select a option");
+            let mood = (await con.input())[0];
+
+
+            switch (Number.parseInt(mood)) {
+                case 1:
+                    con.output("add student has been choose");
+                    await addStudent();
+                    break;
+                case 2:
+                    con.output("remove student has been choose");
+                    await removeStudent();
+                    break;
+                case 3:
+                    con.output("select student has been choose");
+                    await selectStudent();
+                    break;
+                case 4:
+                    con.output("exit has been choose");
+                    loop = 0;
+                    break;
+                default:
+                    con.output("error X_X");
+                    break;
+            }
+        }
+
+
+
+
     });
 </script>
 </body>
