@@ -130,8 +130,6 @@ let Console = class extends Object {
 
     //HTMLElement, the main element of control panel
     #consolePanel = null;
-    //the cancel button of panel, only inline panel use it
-    #consolePanelCancelBtn = null;
 
     //the editing p element
     #editingInput = null;
@@ -189,6 +187,8 @@ let Console = class extends Object {
                 if (ev.key.toLowerCase() === "enter") {
                     ev.preventDefault();
                     resolve();
+                } else if (ev.key.toLowerCase() === "space") {
+                    this.innerText += " ";
                 }
             });
 
@@ -267,7 +267,6 @@ let Console = class extends Object {
         container.appendChild(consolePanelCancelBtn);
         container.appendChild(consolePanel);
 
-        this.#consolePanelCancelBtn = consolePanelCancelBtn;
         this.#consolePanel = consolePanel;
 
         let stylesheet = new CSSStyleSheet();
@@ -280,7 +279,7 @@ let Console = class extends Object {
             if (!that.#getEditingInput()) return false;
             that.#getEditingInput().focus();
         });
-        this.#consolePanelCancelBtn.addEventListener("click", function () {
+        consolePanelCancelBtn.addEventListener("click", function () {
             that.#consolePanel.classList.toggle("cancel");
             this.classList.toggle("cancel");
         });
@@ -326,6 +325,11 @@ let Console = class extends Object {
     *  the information entered by the user is divided into Spaces,
     *  divided into an array of strings, and returned
     * */
+    async inputs() {
+        let res = await this.input();
+        return res.trim().split(" ");
+    }
+
     async input() {
         if (this.#getEditingInput()) {
             return false;
@@ -334,9 +338,15 @@ let Console = class extends Object {
         let p = this.#initItem("");
 
         await this.#setEditingInput(p);
-        let res = this.#getEditingInput().innerText.trim().split(" ");
+        let res = this.#getEditingInput().innerText;
 
         await this.#setEditingInput(null);
+
+        //the content string usually has a special char which code is 160
+        //it seems like space ,but they are different
+        //we need to change them into space to
+        //ensure the normal operation of the program
+        res = res.replaceAll(String.fromCharCode(160), String.fromCharCode(32));
 
         return res;
     }

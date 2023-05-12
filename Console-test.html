@@ -26,11 +26,11 @@
                 gender;
             }
             con.output("input ID please");
-            let stuId = (await con.input())[0];
+            let stuId = (await con.inputs())[0];
             con.output("input student name");
-            let stuName = (await con.input())[0];
+            let stuName = (await con.inputs())[0];
             con.output("gender");
-            let stuGender = (await con.input())[0];
+            let stuGender = (await con.inputs())[0];
 
             let stu = new Student();
             stu.id = stuId;
@@ -44,7 +44,7 @@
 
         async function removeStudent() {
             con.output("input ID please");
-            let stuId = (await con.input())[0];
+            let stuId = (await con.inputs())[0];
 
             let student = students.find(v => v.id === stuId);
             students.splice(students.indexOf(student), 1);
