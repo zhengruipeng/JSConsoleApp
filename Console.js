@@ -80,6 +80,7 @@ let Console = class extends Object {
             transition:.3s;
         }
         #console-panel>p{
+            white-space: pre;
             word-break:break-all;
             font-family: Source Code Pro;
             font-size:1.2rem;
@@ -327,7 +328,7 @@ let Console = class extends Object {
     * */
     async inputs() {
         let res = await this.input();
-        return res.trim().split(" ");
+        return res.trim().split(/\s+/);
     }
 
     async input() {

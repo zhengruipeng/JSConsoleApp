@@ -9,7 +9,7 @@
     </style>
 </head>
 <body>
-<input type="text" />
+<input type="text"/>
 <script type="module">
     import {Console} from "./Console.js";
 
@@ -17,9 +17,11 @@
         let con = new Console();
         con.renderAsConsoleInline();
 
-        window.ondblclick = async function () {
-            await con.input();
-        }
+        let arr = await con.inputs();
+        con.output(arr.join(", "));
+
+        let str = await con.input();
+        con.output(str);
 
 
     });
