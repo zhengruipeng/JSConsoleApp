@@ -1,10 +1,6 @@
 let Console = class extends Object {
     //default Style Sheet
     #consoleStyleSheet = `
-        *{
-            padding:0;
-            margin:0;
-        }
         #console-panel{
             background-color: #000;
             color:#fff;
@@ -12,9 +8,13 @@ let Console = class extends Object {
             height:100vh;
             width:100vw;
             overflow-y:scroll;
+            position:fixed;
+            top:0;
+            left:0;
         }
 
         #console-panel>p{
+            /*white-space: pre;*/
             word-break:break-all;
             font-family: Source Code Pro;
             font-size:1.2rem;
@@ -80,7 +80,7 @@ let Console = class extends Object {
             transition:.3s;
         }
         #console-panel>p{
-            white-space: pre;
+            /*white-space: pre;*/
             word-break:break-all;
             font-family: Source Code Pro;
             font-size:1.2rem;
@@ -144,7 +144,7 @@ let Console = class extends Object {
         if (!this.autoFinish) return false;
 
         if (this.timer) clearTimeout(this.timer);
-        this.timer = setTimeout(this.end.bind(this), 10);
+        if (!this.#getEditingInput()) this.timer = setTimeout(this.end.bind(this), 10);
     }
 
     //cancel timer
@@ -168,15 +168,15 @@ let Console = class extends Object {
         if (htmlPElement) {
             htmlPElement.contentEditable = true;
             htmlPElement.classList.add("editable");
+            this.#editingInput = htmlPElement;
             this.cancelTimer();
         } else {
             this.#editingInput.contentEditable = false;
             this.#editingInput.classList.remove("editable");
+            this.#editingInput = htmlPElement;
             this.updateTimer();
         }
 
-
-        this.#editingInput = htmlPElement;
 
         let that = this;
         return new Promise(resolve => {
@@ -298,9 +298,14 @@ let Console = class extends Object {
     * */
     #initItem(msg) {
         let p = document.createElement("p");
+        msg = msg.replaceAll(String.fromCharCode(32), String.fromCharCode(160));
         p.innerHTML = msg;
-
-        this.#consolePanel.appendChild(p);
+        if (this.#getEditingInput()) {
+            this.#getEditingInput().insertAdjacentElement("beforebegin", p);
+        } else {
+            this.#consolePanel.appendChild(p);
+        }
+        p.scrollIntoView();
         return p;
     }
 
@@ -313,9 +318,30 @@ let Console = class extends Object {
         this.updateTimer();
     }
 
+    error(...msgs) {
+        let that = this;
+        msgs.forEach(msg => {
+            let p = that.#initItem("Error: " + msg);
+            p.style.color = "red";
+        });
+
+        this.updateTimer();
+    }
+
+    warn(...msgs) {
+        let that = this;
+        msgs.forEach(msg => {
+            let p = that.#initItem("Warn: " + msg);
+            p.style.color = "yellow";
+        });
+
+        this.updateTimer();
+    }
+
     end(msg = "The program has ended....") {
         this.output(msg);
         this.cancelTimer();
+        this.autoFinish = false;
     }
 
     /*

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+        }
+    </style>
+</head>
+<body>
+<input type="text"/>
+<script type="module">
+    import {Console} from "./Console.js";
+
+    document.addEventListener("DOMContentLoaded", async function () {
+        let con = new Console();
+        con.renderAsConsoleApp();
+
+        con.error("ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ex   cept  ion  ");
+        con.warn("warning");
+        setTimeout(function () {
+            con.output("timeout");
+        }, 2000);
+        await con.input();
+
+    });
+</script>
+</body>
+</html>
