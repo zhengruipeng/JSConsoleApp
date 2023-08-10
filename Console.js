@@ -129,6 +129,9 @@ let Console = class extends Object {
         }
     `;
 
+    //the stack of input messages` history
+    #inputHistory = [];
+
     //HTMLElement, the main element of control panel
     #consolePanel = null;
 
@@ -184,12 +187,48 @@ let Console = class extends Object {
                 resolve();
             }
 
+            let historyPointer = 0;
             that.#editingInput?.addEventListener("keydown", function (ev) {
+                /*
+                * Handle some special keys:
+                * When you enter the "Enter", the input ends
+                * Entering a space creates a space in the input window
+                * If an up arrow is entered, it is overwritten as the previous message
+                * If a down arrow is entered, it is overwritten as the next message
+                * */
                 if (ev.key.toLowerCase() === "enter") {
                     ev.preventDefault();
                     resolve();
                 } else if (ev.key.toLowerCase() === "space") {
                     this.innerText += " ";
+                } else if (ev.key === "ArrowUp") {
+                    if (historyPointer >= that.#inputHistory.length) return false;
+                    this.innerText = that.#inputHistory[that.#inputHistory.length - (++historyPointer)];
+
+                    const range = document.createRange();
+                    const selection = window.getSelection();
+
+                    range.selectNodeContents(that.#editingInput);
+                    range.collapse(false);
+
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                } else if (ev.key === "ArrowDown") {
+                    if (historyPointer <= 1) return false;
+                    this.innerText = that.#inputHistory[that.#inputHistory.length - (--historyPointer)];
+
+                    const range = document.createRange();
+                    const selection = window.getSelection();
+
+                    range.selectNodeContents(this);
+                    range.collapse(false);
+
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                } else if (ev.key.toLowerCase() === "c" && ev.ctrlKey) {
+                    ev.preventDefault();
+                    this.innerText += "^C";
+                    resolve();
                 }
             });
 
@@ -202,6 +241,7 @@ let Console = class extends Object {
                 }
             });
 
+            //Automatically moves the cursor to the end when the file focuses on the input window
             that.#editingInput?.addEventListener("focus", function (ev) {
                 const range = document.createRange();
                 const selection = window.getSelection();
@@ -298,6 +338,7 @@ let Console = class extends Object {
     * */
     #initItem(msg) {
         let p = document.createElement("p");
+        msg = msg?.toString() || msg + "";
         msg = msg.replaceAll(String.fromCharCode(32), String.fromCharCode(160));
         p.innerHTML = msg;
         if (this.#getEditingInput()) {
@@ -311,10 +352,10 @@ let Console = class extends Object {
 
     output(...msgs) {
         let that = this;
-        msgs.forEach(msg => {
+        /*msgs.forEach(msg => {
             that.#initItem(msg);
-        });
-
+        });*/
+        this.#initItem(msgs.join(" "));
         this.updateTimer();
     }
 
@@ -375,7 +416,17 @@ let Console = class extends Object {
         //ensure the normal operation of the program
         res = res.replaceAll(String.fromCharCode(160), String.fromCharCode(32));
 
+        //push the input string into history
+        this.#inputHistory.push(res);
+
         return res;
+    }
+
+    clear() {
+        this.#inputHistory = [];
+        this.cancelTimer();
+
+        this.#consolePanel.innerHTML = "";
     }
 };
 
